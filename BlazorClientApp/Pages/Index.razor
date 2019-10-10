@@ -1,0 +1,16 @@
+﻿@page "/"
+
+@inherits LayoutComponentBase
+
+<AuthorizeView>
+    <Authorized>
+        <p><em>Content visible only for authorized user ...</em></p>
+    </Authorized>
+    <Authorizing>
+        <h1>Loading ...</h1>
+    </Authorizing>
+</AuthorizeView>
+
+
+@code {
+}

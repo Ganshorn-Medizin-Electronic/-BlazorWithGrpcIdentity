@@ -1,0 +1,49 @@
+﻿@using Provider;
+
+@inherits LayoutComponentBase
+@inject GrpcAuthenticationStateProvider authStateProvider;
+@inject NavigationManager navigationManager
+
+<AuthorizeView>
+    <Authorized>
+        <div class="main">
+            <div class="top-row px-4">
+                <button type="button" class="btn btn-link ml-md-auto" @onclick="@LogoutClick">Logout</button>
+            </div>
+            <div class="content px-4">
+                @Body
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="content px-4">
+            @Body
+        </div>
+    </NotAuthorized>
+    <Authorizing>
+        <p>Authorizing ....</p>
+    </Authorizing>
+</AuthorizeView>
+
+@functions{
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async void OnParametersSet()
+    {
+        bool isAuthenticated = (await AuthenticationState).User.Identity.IsAuthenticated;
+
+        if (!isAuthenticated)
+        {
+            navigationManager.NavigateTo("login");
+        }
+    }
+
+    async Task LogoutClick()
+    {
+        authStateProvider.Logout();
+        navigationManager.NavigateTo("login");
+
+    }
+}
